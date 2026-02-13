@@ -1,0 +1,31 @@
+{
+  "name": "aegis-shield",
+  "version": "1.0.0",
+  "description": "A privacy-first browser extension for real-time AI prompt scrubbing and Unicode tag stripping. Local-only PII redaction using SLMs.",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt --browser firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build --browser firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip --browser firefox",
+    "postinstall": "wxt prepare"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AegisProxy/aegis-shield.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/AegisProxy/aegis-shield/issues"
+  },
+  "homepage": "https://github.com/AegisProxy/aegis-shield#readme",
+  "devDependencies": {
+    "@types/chrome": "^0.1.36",
+    "typescript": "^5.9.3",
+    "wxt": "^0.20.17"
+  }
+}
