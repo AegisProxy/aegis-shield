@@ -66,7 +66,7 @@ export default defineContentScript({
               addWarningIndicator(element, summary);
             } else {
               // Remove warning if no PII detected
-              removeWarningIndicator(element);
+              removeWarningIndicator();
             }
           }
         }
@@ -127,7 +127,7 @@ export default defineContentScript({
     }
     
     // Remove warning indicator
-    function removeWarningIndicator(element: HTMLElement) {
+    function removeWarningIndicator() {
       const indicator = document.getElementById('aegis-shield-warning');
       if (indicator) {
         indicator.remove();

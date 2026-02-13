@@ -21,11 +21,12 @@ const PII_PATTERNS = {
   // US Social Security Numbers (SSN)
   ssn: /\b\d{3}-\d{2}-\d{4}\b/g,
   
-  // Credit card numbers (basic pattern, 13-19 digits with optional spaces/dashes)
-  creditCard: /\b(?:\d{4}[-\s]?){3}\d{4}\b|\b\d{13,19}\b/g,
+  // Credit card numbers (only format with separators to reduce false positives)
+  creditCard: /\b(?:\d{4}[-\s]){3}\d{4}\b/g,
   
-  // US Zip codes
-  zipCode: /\b\d{5}(?:-\d{4})?\b/g,
+  // US Zip codes (5 digits optionally followed by hyphen and 4 more digits)
+  // Note: This may still match some 5-digit numbers; future SLM integration will improve accuracy
+  zipCode: /\b\d{5}-\d{4}\b/g,
   
   // IPv4 addresses
   ipAddress: /\b(?:\d{1,3}\.){3}\d{1,3}\b/g,

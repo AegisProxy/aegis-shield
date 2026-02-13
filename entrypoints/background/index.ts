@@ -1,15 +1,15 @@
 export default defineBackground(() => {
   console.log('Aegis Shield: Background service worker initialized');
 
-  // Intercept fetch requests to OpenAI and Anthropic
+  // Monitor fetch requests to OpenAI and Anthropic
+  // Note: In Manifest V3, webRequest blocking is limited. For full request interception,
+  // consider migrating to chrome.declarativeNetRequest API in the future.
   chrome.webRequest.onBeforeRequest.addListener(
     (details) => {
-      console.log('Aegis Shield: Intercepted request to', details.url);
+      console.log('Aegis Shield: Detected request to', details.url);
       
-      // TODO: Add logic to inspect and modify requests
-      // For now, just log the interception
-      
-      return { cancel: false };
+      // TODO: For request modification, migrate to declarativeNetRequest API
+      // This currently only logs the requests for monitoring purposes
     },
     {
       urls: [
@@ -18,8 +18,7 @@ export default defineBackground(() => {
         '*://*.anthropic.com/*',
         '*://api.anthropic.com/*'
       ]
-    },
-    ['blocking']
+    }
   );
 
   // Listen for messages from content scripts
