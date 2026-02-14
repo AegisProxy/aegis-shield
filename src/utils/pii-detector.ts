@@ -167,7 +167,7 @@ export function redactPII(text: string): string {
 }
 
 /** Zero-width and invisible Unicode characters to strip */
-const UNICODE_INVISIBLE_PATTERN = /[\u200B-\u200D\u2060\uFEFF\u00AD\u034F\u061C\u115F\u1160\u17B4\u17B5\u180E\u3164\uFFA0\uE0020-\uE007F]/g;
+const UNICODE_INVISIBLE_PATTERN = /[\u200B-\u200D\u2060\uFEFF\u00AD\u034F\u061C\u115F\u1160\u17B4\u17B5\u180E\u3164\uFFA0\u{E0020}-\u{E007F}]/gu;
 
 /**
  * Strips invisible Unicode characters (zero-width spaces, watermarks, etc.) from text
