@@ -138,3 +138,47 @@ export function getPIISummary(text: string): Record<string, number> {
   
   return summary;
 }
+
+/** Placeholder labels for redacted PII types */
+const PII_PLACEHOLDERS: Record<string, string> = {
+  email: '[EMAIL]',
+  phone: '[PHONE]',
+  ssn: '[SSN]',
+  creditCard: '[CARD]',
+  zipCode: '[ZIP]',
+  ipAddress: '[IP]',
+  date: '[DATE]',
+};
+
+/**
+ * Redacts PII in text by replacing detected values with placeholders
+ */
+export function redactPII(text: string): string {
+  const matches = detectPII(text);
+  // Sort by startIndex descending so we replace from end to start (preserves indices)
+  const sortedMatches = [...matches].sort((a, b) => b.startIndex - a.startIndex);
+  
+  let result = text;
+  for (const match of sortedMatches) {
+    const placeholder = PII_PLACEHOLDERS[match.type] ?? `[${match.type.toUpperCase()}]`;
+    result = result.slice(0, match.startIndex) + placeholder + result.slice(match.endIndex);
+  }
+  return result;
+}
+
+/** Zero-width and invisible Unicode characters to strip */
+const UNICODE_INVISIBLE_PATTERN = /[\u200B-\u200D\u2060\uFEFF\u00AD\u034F\u061C\u115F\u1160\u17B4\u17B5\u180E\u3164\uFFA0\uE0020-\uE007F]/g;
+
+/**
+ * Strips invisible Unicode characters (zero-width spaces, watermarks, etc.) from text
+ */
+export function stripUnicodeTags(text: string): string {
+  return text.replace(UNICODE_INVISIBLE_PATTERN, '');
+}
+
+/**
+ * Scrubs text: strips Unicode tags and redacts PII
+ */
+export function scrubText(text: string): string {
+  return redactPII(stripUnicodeTags(text));
+}

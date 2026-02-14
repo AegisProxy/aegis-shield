@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="defaultTitle" content="Aegis Shield - PII Scrubber" />
+  <title>Aegis Shield</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🛡️ Aegis Shield</h1>
+      <p class="subtitle">Paste your prompt to scrub PII before sending to AI</p>
+    </header>
+    <main>
+      <textarea id="input" placeholder="Paste your prompt here..."></textarea>
+      <div id="results" class="results hidden">
+        <div id="warnings" class="warnings"></div>
+        <div class="actions">
+          <button id="copy" type="button">Copy scrubbed text</button>
+        </div>
+      </div>
+      <div id="empty" class="empty-state">Paste or type your prompt above</div>
+    </main>
+  </div>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
