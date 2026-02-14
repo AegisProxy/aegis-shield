@@ -141,10 +141,22 @@ button:active {
   background: #4f46e5;
 }
 
-#copy:disabled {
+#restore {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+#restore:hover {
+  background: #e5e7eb;
+}
+
+#copy:disabled,
+#restore:disabled {
   background: #d1d5db;
   cursor: not-allowed;
   transform: none;
+  border-color: #e5e7eb;
 }
 
 .empty-state {

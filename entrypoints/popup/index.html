@@ -11,14 +11,15 @@
   <div class="container">
     <header>
       <h1>🛡️ Aegis Shield</h1>
-      <p class="subtitle">Paste your prompt to scrub PII before sending to AI</p>
+      <p class="subtitle">Scrub PII before AI, or restore it after pasting the response</p>
     </header>
     <main>
-      <textarea id="input" placeholder="Paste your prompt here..."></textarea>
+      <textarea id="input" placeholder="Paste prompt to scrub, or AI response with [EMAIL], [PHONE] to restore"></textarea>
       <div id="results" class="results hidden">
         <div id="warnings" class="warnings"></div>
         <div class="actions">
           <button id="copy" type="button">Copy scrubbed text</button>
+          <button id="restore" type="button">Restore PII</button>
         </div>
       </div>
       <div id="empty" class="empty-state">Paste or type your prompt above</div>

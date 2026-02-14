@@ -182,3 +182,34 @@ export function stripUnicodeTags(text: string): string {
 export function scrubText(text: string): string {
   return redactPII(stripUnicodeTags(text));
 }
+
+/**
+ * Scrubs text and returns a mapping of placeholders to original values (for later restore)
+ * Uses first occurrence of each PII type when multiple exist
+ */
+export function scrubTextWithMapping(text: string): { scrubbed: string; mapping: Record<string, string> } {
+  const stripped = stripUnicodeTags(text);
+  const matches = detectPII(stripped);
+  const mapping: Record<string, string> = {};
+  for (const match of matches) {
+    const placeholder = PII_PLACEHOLDERS[match.type] ?? `[${match.type.toUpperCase()}]`;
+    if (!(placeholder in mapping)) {
+      mapping[placeholder] = match.value;
+    }
+  }
+  return {
+    scrubbed: redactPII(stripped),
+    mapping,
+  };
+}
+
+/**
+ * Restores placeholders in text with original PII values from a previous scrub
+ */
+export function restorePII(text: string, mapping: Record<string, string>): string {
+  let result = text;
+  for (const [placeholder, value] of Object.entries(mapping)) {
+    result = result.split(placeholder).join(value);
+  }
+  return result;
+}
