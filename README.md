@@ -1,14 +1,14 @@
 # Aegis Shield
 
-A privacy-first browser extension that detects and redacts PII in prompts before you send them to AI chatbots. Paste your text, scrub it, then paste the safe version into ChatGPT, Claude, or any AI—all processing happens locally in your browser.
+A privacy-first browser extension that detects and redacts PII in prompts before you send them to AI chatbots. Paste your text, scrub it, then paste the safe version into ChatGPT, Claude, or any AI-all processing happens locally in your browser.
 
 ## Features
 
-- **PII Detection** — Emails, phones, SSNs, credit cards, IPs, dates, and more
-- **Unicode Stripping** — Removes invisible zero-width characters and watermarks
-- **Copy Scrubbed** — One click to copy redacted text to clipboard
-- **Restore PII** — Paste AI response with placeholders, restore your real data for emails
-- **Local-Only** — Nothing leaves your browser
+- **PII Detection** - Emails, phones, SSNs, credit cards, IPs, dates, and more
+- **Unicode Stripping** - Removes invisible zero-width characters and watermarks
+- **Copy Scrubbed** - One click to copy redacted text to clipboard
+- **Restore PII** - Paste AI response with placeholders, restore your real data for emails
+- **Local-Only** - Nothing leaves your browser
 
 ## Quick Start
 
@@ -22,13 +22,13 @@ Load in Chrome: `chrome://extensions` → Developer mode → Load unpacked → `
 ## Usage
 
 **Popup:**
-1. **Scrub** — Click the extension icon, paste your prompt, click **Copy scrubbed text**
-2. **Send** — Paste into ChatGPT, Claude, or any AI
-3. **Restore** — After getting a response with `[EMAIL]`, `[PHONE]`, etc., paste it back into the popup and click **Restore PII** to get your real data back
+1. **Scrub** - Click the extension icon, paste your prompt, click **Copy scrubbed text**
+2. **Send** - Paste into ChatGPT, Claude, or any AI
+3. **Restore** - After getting a response with `[EMAIL]`, `[PHONE]`, etc., paste it back into the popup and click **Restore PII** to get your real data back
 
 **Context menu (right-click anywhere):**
-- **Scrub clipboard** — Copy text to clipboard, then right‑click → Scrub clipboard. Clipboard is replaced with scrubbed text; mapping is saved.
-- **Restore PII in clipboard** — Paste AI response into clipboard, then right‑click → Restore PII in clipboard. Clipboard is replaced with restored text.
+- **Scrub clipboard** - Copy text to clipboard, then right‑click → Scrub clipboard. Clipboard is replaced with scrubbed text; mapping is saved.
+- **Restore PII in clipboard** - Paste AI response into clipboard, then right‑click → Restore PII in clipboard. Clipboard is replaced with restored text.
 
 **Keyboard shortcuts** (customize at `chrome://extensions/shortcuts`):
 | Action | Default (Win/Linux) | Default (Mac) |
@@ -51,7 +51,7 @@ Load in Chrome: `chrome://extensions` → Developer mode → Load unpacked → `
 | Orgs       | `[ORG]`      | AI (optional) |
 | Locations  | `[LOCATION]` | AI (optional) |
 
-**AI detection** — Hold the "Hold to download" button in the popup to download a local NER model (~110MB). The download runs in the background, so you can close the popup and it will continue. Once ready, an "AI ready" badge appears and names, organizations, and locations are detected automatically.
+**AI detection** - Hold the "Hold to download" button in the popup to download a local NER model (~110MB). The download runs in the background, so you can close the popup and it will continue. Once ready, an "AI ready" badge appears and names, organizations, and locations are detected automatically.
 
 ## Project Structure
 
