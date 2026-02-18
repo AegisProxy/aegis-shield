@@ -60,9 +60,7 @@ export default defineBackground(() => {
   setupContextMenus();
   chrome.runtime.onInstalled.addListener(setupContextMenus);
 
-  chrome.contextMenus.onClicked.addListener(async (info) => {
-    const action = info.menuItemId === 'aegis-scrub' ? 'scrub' : 'restore';
-
+  async function runClipboardAction(action: 'scrub' | 'restore') {
     try {
       const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
       const tabId = activeTab?.id;
@@ -104,5 +102,15 @@ export default defineBackground(() => {
     } catch (e) {
       console.warn('Aegis Shield:', e);
     }
+  }
+
+  chrome.contextMenus.onClicked.addListener((info) => {
+    const action = info.menuItemId === 'aegis-scrub' ? 'scrub' : 'restore';
+    runClipboardAction(action);
+  });
+
+  chrome.commands.onCommand.addListener((command) => {
+    if (command === 'scrub-clipboard') runClipboardAction('scrub');
+    else if (command === 'restore-pii') runClipboardAction('restore');
   });
 });

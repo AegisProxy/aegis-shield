@@ -41,6 +41,20 @@
       <div id="empty" class="flex items-center justify-center py-8 text-sm text-muted-foreground">
         Paste or type your prompt above
       </div>
+      <section class="mt-2 border-t border-border pt-3">
+        <h2 class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">Keyboard shortcuts</h2>
+        <div id="shortcuts" class="space-y-1.5 text-sm text-muted-foreground">
+          <div class="flex justify-between gap-2">
+            <span>Scrub clipboard</span>
+            <kbd id="shortcut-scrub" class="rounded border border-border bg-muted px-2 py-0.5 font-mono text-xs">—</kbd>
+          </div>
+          <div class="flex justify-between gap-2">
+            <span>Restore PII in clipboard</span>
+            <kbd id="shortcut-restore" class="rounded border border-border bg-muted px-2 py-0.5 font-mono text-xs">—</kbd>
+          </div>
+          <a href="#" id="shortcuts-link" class="text-xs text-primary hover:underline">Customize in extension shortcuts</a>
+        </div>
+      </section>
     </main>
   </div>
   <script type="module" src="./main.ts"></script>

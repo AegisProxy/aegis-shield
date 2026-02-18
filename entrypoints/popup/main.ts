@@ -69,7 +69,27 @@ async function restorePIIHandler() {
   updateUI();
 }
 
+async function loadShortcuts() {
+  try {
+    const commands = await chrome.commands.getAll();
+    const scrub = commands.find((c) => c.name === 'scrub-clipboard');
+    const restore = commands.find((c) => c.name === 'restore-pii');
+    const scrubEl = document.getElementById('shortcut-scrub');
+    const restoreEl = document.getElementById('shortcut-restore');
+    if (scrubEl) scrubEl.textContent = scrub?.shortcut || 'Not set';
+    if (restoreEl) restoreEl.textContent = restore?.shortcut || 'Not set';
+  } catch {
+    /* commands API not available */
+  }
+}
+
+document.getElementById('shortcuts-link')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+});
+
 input.addEventListener('input', updateUI);
 input.addEventListener('paste', () => setTimeout(updateUI, 0));
 copyBtn.addEventListener('click', copyScrubbed);
 restoreBtn.addEventListener('click', restorePIIHandler);
+loadShortcuts();

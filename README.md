@@ -30,6 +30,12 @@ Load in Chrome: `chrome://extensions` → Developer mode → Load unpacked → `
 - **Scrub clipboard** — Copy text to clipboard, then right‑click → Scrub clipboard. Clipboard is replaced with scrubbed text; mapping is saved.
 - **Restore PII in clipboard** — Paste AI response into clipboard, then right‑click → Restore PII in clipboard. Clipboard is replaced with restored text.
 
+**Keyboard shortcuts** (customize at `chrome://extensions/shortcuts`):
+| Action | Default (Win/Linux) | Default (Mac) |
+|--------|---------------------|---------------|
+| Scrub clipboard | `Ctrl+Shift+S` | `⌘+Shift+S` |
+| Restore PII | `Ctrl+Shift+Z` | `⌘+Shift+Z` |
+
 ## PII Types
 
 | Type        | Redacted as |
