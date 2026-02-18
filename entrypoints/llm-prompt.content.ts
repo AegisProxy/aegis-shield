@@ -6,21 +6,31 @@ import { hasPII, getPIISummary } from '../src/utils/pii-detector';
 
 const INPUT_SELECTORS = [
   '#prompt-textarea',
-  '[contenteditable="true"][role="textbox"]',
+  'form.stretch textarea',
   'textarea[placeholder*="Message"]',
   'textarea[placeholder*="Ask"]',
+  'textarea[placeholder*="message"]',
+  '[contenteditable="true"][role="textbox"]',
+  'textarea',
   '[contenteditable="true"]',
 ];
 
 function findInput(): HTMLElement | null {
   for (const sel of INPUT_SELECTORS) {
     const el = document.querySelector(sel);
-    if (el) return el as HTMLElement;
+    if (el && (el instanceof HTMLTextAreaElement || el.isContentEditable)) {
+      return el as HTMLElement;
+    }
   }
   return null;
 }
 
+const attached = new WeakSet<HTMLElement>();
+
 function attachMonitor(element: HTMLElement) {
+  if (attached.has(element)) return;
+  attached.add(element);
+
   let lastValue = '';
 
   const check = () => {
@@ -37,7 +47,8 @@ function attachMonitor(element: HTMLElement) {
   };
 
   element.addEventListener('input', check);
-  element.addEventListener('paste', () => setTimeout(check, 100));
+  element.addEventListener('keyup', check);
+  element.addEventListener('paste', () => setTimeout(check, 150));
 
   const observer = new MutationObserver(check);
   observer.observe(element, { characterData: true, childList: true, subtree: true });
@@ -48,19 +59,29 @@ function showToast(summary: Record<string, number>) {
   if (!toast && document.body) {
     toast = document.createElement('div');
     toast.id = 'aegis-shield-toast';
-    toast.style.cssText = `
-      position:fixed;bottom:24px;right:24px;background:#ef4444;color:#fff;
-      padding:12px 20px;border-radius:8px;font-family:system-ui,sans-serif;
-      font-size:13px;font-weight:500;z-index:2147483647;
-      box-shadow:0 4px 12px rgba(0,0,0,0.15);
-    `;
+    Object.assign(toast.style, {
+      position: 'fixed',
+      bottom: '24px',
+      right: '24px',
+      zIndex: '2147483647',
+      fontFamily: 'ui-sans-serif, system-ui, -apple-system, sans-serif',
+      fontSize: '13px',
+      fontWeight: '500',
+      padding: '12px 16px',
+      borderRadius: '8px',
+      border: '1px solid rgb(254 202 202)',
+      backgroundColor: 'rgb(254 242 242)',
+      color: 'rgb(153 27 27)',
+      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+      maxWidth: '320px',
+    });
     document.body.appendChild(toast);
   }
 
   const types = Object.entries(summary)
     .map(([t, n]) => `${t} (${n})`)
     .join(', ');
-  toast!.innerHTML = `<strong>⚠ PII detected:</strong> ${types}`;
+  toast!.innerHTML = `<span style="font-weight:600">PII detected:</span> ${types}`;
   toast!.style.display = 'block';
 }
 
@@ -90,19 +111,25 @@ export default defineContentScript({
   runAt: 'document_idle',
 
   main() {
-    if (init()) return;
+    const tryInit = () => {
+      if (init()) return true;
+      return false;
+    };
+
+    if (tryInit()) return;
 
     const root = document.body ?? document.documentElement;
-    if (!root || !(root instanceof Node)) return;
-
-    const observer = new MutationObserver(() => {
-      if (init()) observer.disconnect();
-    });
-    try {
-      observer.observe(root, { childList: true, subtree: true });
-    } catch {
-      // ignore
+    if (root && root instanceof Node) {
+      const observer = new MutationObserver(() => {
+        if (tryInit()) observer.disconnect();
+      });
+      try {
+        observer.observe(root, { childList: true, subtree: true });
+      } catch {
+        /* ignore */
+      }
     }
-    setTimeout(init, 1000);
+
+    [500, 1500, 3000, 5000].forEach((ms) => setTimeout(tryInit, ms));
   },
 });

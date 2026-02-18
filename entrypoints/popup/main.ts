@@ -27,15 +27,15 @@ function updateUI() {
   if (hasPII) {
     warnings.innerHTML = Object.entries(summary)
       .map(([type, count]) => `
-        <div class="warning-item">
-          <span class="type">${type}</span>
-          <span class="count">${count}</span>
+        <div class="flex items-center justify-between gap-2 rounded-md border border-destructive/20 bg-destructive/5 px-3 py-2 text-sm">
+          <span class="font-medium capitalize text-destructive">${type}</span>
+          <span class="rounded bg-destructive/20 px-2 py-0.5 text-xs font-medium text-destructive">${count}</span>
         </div>
       `)
       .join('');
     copyBtn.disabled = false;
   } else {
-    warnings.innerHTML = '<div class="safe">✓ No PII detected</div>';
+    warnings.innerHTML = '<div class="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm font-medium text-green-800">✓ No PII detected</div>';
     copyBtn.disabled = false;
   }
 

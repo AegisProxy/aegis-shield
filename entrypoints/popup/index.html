@@ -7,22 +7,40 @@
   <title>Aegis Shield</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
-<body>
-  <div class="container">
-    <header>
-      <h1>🛡️ Aegis Shield</h1>
-      <p class="subtitle">Scrub PII before AI, or restore it after pasting the response</p>
+<body class="bg-background text-foreground font-sans antialiased min-w-[380px] min-h-[440px]">
+  <div class="flex flex-col gap-5 p-5">
+    <header class="flex flex-col gap-1.5 border-b border-border pb-4">
+      <h1 class="text-lg font-semibold tracking-tight">Aegis Shield</h1>
+      <p class="text-sm text-muted-foreground">Scrub PII before AI, or restore after pasting the response</p>
     </header>
-    <main>
-      <textarea id="input" placeholder="Paste prompt to scrub, or AI response with [EMAIL], [PHONE] to restore"></textarea>
-      <div id="results" class="results hidden">
-        <div id="warnings" class="warnings"></div>
-        <div class="actions">
-          <button id="copy" type="button">Copy scrubbed text</button>
-          <button id="restore" type="button">Restore PII</button>
+    <main class="flex flex-col gap-4">
+      <textarea
+        id="input"
+        placeholder="Paste prompt to scrub, or AI response with [EMAIL], [PHONE] to restore"
+        class="min-h-[140px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+      ></textarea>
+      <div id="results" class="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 hidden">
+        <div id="warnings" class="flex flex-col gap-2"></div>
+        <div class="flex gap-2">
+          <button
+            id="copy"
+            type="button"
+            class="inline-flex flex-1 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transition-colors"
+          >
+            Copy scrubbed text
+          </button>
+          <button
+            id="restore"
+            type="button"
+            class="inline-flex flex-1 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transition-colors"
+          >
+            Restore PII
+          </button>
         </div>
       </div>
-      <div id="empty" class="empty-state">Paste or type your prompt above</div>
+      <div id="empty" class="flex items-center justify-center py-8 text-sm text-muted-foreground">
+        Paste or type your prompt above
+      </div>
     </main>
   </div>
   <script type="module" src="./main.ts"></script>

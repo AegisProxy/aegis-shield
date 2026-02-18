@@ -25,6 +25,9 @@
   "homepage": "https://github.com/AegisProxy/aegis-shield#readme",
   "devDependencies": {
     "@types/chrome": "^0.1.36",
+    "autoprefixer": "^10.4.24",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3",
     "wxt": "^0.20.17"
   }
