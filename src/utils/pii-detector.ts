@@ -1,6 +1,5 @@
 /**
- * Fast-pass PII detector using regex patterns
- * This provides a quick first-pass detection before more sophisticated SLM analysis
+ * PII detector using regex patterns for emails, phones, SSNs, cards, IPs, dates, etc.
  */
 
 export interface PIIMatch {
@@ -13,7 +12,7 @@ export interface PIIMatch {
 // Regex patterns for common PII types
 const PII_PATTERNS = {
   // Email addresses
-  email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+  email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
   
   // US Phone numbers (various formats)
   phone: /(\+1[-.]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g,
@@ -24,8 +23,7 @@ const PII_PATTERNS = {
   // Credit card numbers (only format with separators to reduce false positives)
   creditCard: /\b(?:\d{4}[-\s]){3}\d{4}\b/g,
   
-  // US Zip codes (5 digits optionally followed by hyphen and 4 more digits)
-  // Note: This may still match some 5-digit numbers; future SLM integration will improve accuracy
+  // US Zip+4 codes (5 digits hyphen 4 digits)
   zipCode: /\b\d{5}-\d{4}\b/g,
   
   // IPv4 addresses

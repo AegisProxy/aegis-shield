@@ -1,7 +1,7 @@
 {
   "name": "aegis-shield",
   "version": "1.0.0",
-  "description": "A privacy-first browser extension for real-time AI prompt scrubbing and Unicode tag stripping. Local-only PII redaction using SLMs.",
+  "description": "Privacy-first browser extension. Detect and redact PII in prompts before sending to AI—ChatGPT, Claude, etc. Local-only.",
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "wxt --browser firefox",
@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/AegisProxy/aegis-shield.git"
   },
-  "keywords": [],
+  "keywords": ["browser-extension", "pii", "privacy", "chatgpt", "ai"],
   "author": "",
   "license": "ISC",
   "type": "module",
