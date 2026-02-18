@@ -16,8 +16,8 @@
     "url": "git+https://github.com/AegisProxy/aegis-shield.git"
   },
   "keywords": ["browser-extension", "pii", "privacy", "chatgpt", "ai"],
-  "author": "",
-  "license": "ISC",
+  "author": "Ken Tran",
+  "license": "MIT",
   "type": "module",
   "bugs": {
     "url": "https://github.com/AegisProxy/aegis-shield/issues"

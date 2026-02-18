@@ -65,5 +65,5 @@ aegis-shield/
 
 ## License
 
-ISC 
+MIT 
 
