@@ -1,16 +1,14 @@
 # Aegis Shield
 
-A privacy-first browser extension for AI prompt scrubbing and Unicode tag stripping. Paste your prompts into the popup to detect and redact PII before sending to ChatGPT, Claude, or any AI—all processing happens locally in your browser.
-
-## Why Popup-Only?
-
-ChatGPT and similar AI platforms use anti-tampering that blocks extensions that inject into their pages (causing 403 errors). Aegis Shield uses a **popup workflow** instead: you paste your prompt into the extension, scrub it, then copy the safe version to paste into any AI chat. No injection, no breakage.
+A privacy-first browser extension for AI prompt scrubbing and Unicode tag stripping. Real-time PII warnings on LLM chat sites plus a popup to scrub and restore—all processing happens locally in your browser.
 
 ## Features
 
+- 🎯 **Real-time warnings** — Toast notifications when PII is detected in ChatGPT, Claude, Gemini, Perplexity prompts
 - 🛡️ **PII Detection** — Regex-based detection for emails, phones, SSNs, credit cards, IPs, dates, and more
 - 🧹 **Unicode Stripping** — Removes invisible zero-width characters and watermarks
 - 📋 **Copy Scrubbed** — One click to copy redacted text to clipboard
+- ↩️ **Restore PII** — Paste AI response with placeholders, restore your real data for emails
 - ⚡ **Local-Only** — All processing happens in your browser, nothing is sent anywhere
 - 🧠 **SLM Ready** — Structured for future Small Language Model integration
 
@@ -20,7 +18,8 @@ ChatGPT and similar AI platforms use anti-tampering that blocks extensions that 
 aegis-shield/
 ├── entrypoints/
 │   ├── background/
-│   │   └── index.ts     # Minimal background
+│   │   └── index.ts        # Minimal background
+│   ├── llm-prompt.content.ts  # Real-time PII warnings on LLM sites
 │   └── popup/
 │       ├── index.html   # Popup UI
 │       ├── main.ts      # Popup logic
@@ -63,11 +62,12 @@ npm run dev
 
 ## Usage
 
-1. Click the Aegis Shield icon in your toolbar
-2. Paste your prompt into the text area
-3. Review detected PII (emails, phones, etc.)
-4. Click **Copy scrubbed text**
-5. Paste into ChatGPT, Claude, or any AI chat
+**Automatic (on LLM sites):** Visit ChatGPT, Claude, Gemini, or Perplexity—a toast appears when PII is detected in the prompt box.
+
+**Popup (scrub & restore):**
+1. Click the Aegis Shield icon
+2. Paste your prompt → Click **Copy scrubbed text** → Paste into any AI chat
+3. After getting a response with `[EMAIL]`, `[PHONE]`, etc. → Paste it back into the popup → Click **Restore PII** → Copy for your email
 
 ## PII Types Detected
 
