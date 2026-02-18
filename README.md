@@ -21,9 +21,14 @@ Load in Chrome: `chrome://extensions` → Developer mode → Load unpacked → `
 
 ## Usage
 
+**Popup:**
 1. **Scrub** — Click the extension icon, paste your prompt, click **Copy scrubbed text**
 2. **Send** — Paste into ChatGPT, Claude, or any AI
-3. **Restore** — After getting a response with `[EMAIL]`, `[PHONE]`, etc., paste it back into the popup and click **Restore PII** to get your real data back for your email
+3. **Restore** — After getting a response with `[EMAIL]`, `[PHONE]`, etc., paste it back into the popup and click **Restore PII** to get your real data back
+
+**Context menu (right-click anywhere):**
+- **Scrub clipboard** — Copy text to clipboard, then right‑click → Scrub clipboard. Clipboard is replaced with scrubbed text; mapping is saved.
+- **Restore PII in clipboard** — Paste AI response into clipboard, then right‑click → Restore PII in clipboard. Clipboard is replaced with restored text.
 
 ## PII Types
 
@@ -43,6 +48,7 @@ Load in Chrome: `chrome://extensions` → Developer mode → Load unpacked → `
 aegis-shield/
 ├── entrypoints/
 │   ├── background/index.ts
+│   ├── offscreen/              # Context menu clipboard (Chrome only)
 │   └── popup/
 │       ├── index.html
 │       ├── main.ts
