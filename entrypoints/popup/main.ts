@@ -3,6 +3,7 @@ import { getPIISummary, scrubTextWithMapping, restorePII } from '../../src/utils
 const PII_MAPPING_KEY = 'aegis-pii-mapping';
 
 const input = document.getElementById('input') as HTMLTextAreaElement;
+const pasteBtn = document.getElementById('paste') as HTMLButtonElement;
 const results = document.getElementById('results')!;
 const warnings = document.getElementById('warnings')!;
 const copyBtn = document.getElementById('copy') as HTMLButtonElement;
@@ -23,23 +24,24 @@ function updateUI() {
 
   const summary = getPIISummary(text);
   const hasPII = Object.keys(summary).length > 0;
+  const hasPlaceholders = /\[(?:EMAIL|PHONE|SSN|CARD|ZIP|IP|DATE)\]/i.test(text);
 
   if (hasPII) {
     warnings.innerHTML = Object.entries(summary)
       .map(([type, count]) => `
-        <div class="flex items-center justify-between gap-2 rounded-md border border-destructive/20 bg-destructive/5 px-3 py-2 text-sm">
+        <div class="flex items-center justify-between gap-2 rounded-md bg-destructive/5 px-2 py-1.5 text-xs">
           <span class="font-medium capitalize text-destructive">${type}</span>
-          <span class="rounded bg-destructive/20 px-2 py-0.5 text-xs font-medium text-destructive">${count}</span>
+          <span class="rounded bg-destructive/20 px-1.5 py-0.5 text-[10px] font-medium text-destructive">${count}</span>
         </div>
       `)
       .join('');
     copyBtn.disabled = false;
   } else {
-    warnings.innerHTML = '<div class="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm font-medium text-green-800">✓ No PII detected</div>';
-    copyBtn.disabled = false;
+    warnings.innerHTML = '<div class="rounded-md bg-green-50 px-2 py-1.5 text-xs font-medium text-green-800">✓ No PII detected</div>';
+    copyBtn.disabled = true;
   }
 
-  restoreBtn.disabled = false;
+  restoreBtn.disabled = !hasPlaceholders;
 }
 
 function copyScrubbed() {
@@ -69,6 +71,22 @@ async function restorePIIHandler() {
   updateUI();
 }
 
+async function pasteFromClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    if (text?.trim()) {
+      input.value = text;
+      updateUI();
+      pasteBtn.textContent = 'Pasted!';
+      setTimeout(() => { pasteBtn.textContent = 'Paste'; }, 1000);
+    }
+  } catch {
+    input.focus();
+    document.execCommand('paste');
+    updateUI();
+  }
+}
+
 async function loadShortcuts() {
   try {
     const commands = await chrome.commands.getAll();
@@ -90,6 +108,7 @@ document.getElementById('shortcuts-link')?.addEventListener('click', (e) => {
 
 input.addEventListener('input', updateUI);
 input.addEventListener('paste', () => setTimeout(updateUI, 0));
+pasteBtn.addEventListener('click', pasteFromClipboard);
 copyBtn.addEventListener('click', copyScrubbed);
 restoreBtn.addEventListener('click', restorePIIHandler);
 loadShortcuts();

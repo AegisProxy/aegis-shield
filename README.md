@@ -33,8 +33,8 @@ Load in Chrome: `chrome://extensions` → Developer mode → Load unpacked → `
 **Keyboard shortcuts** (customize at `chrome://extensions/shortcuts`):
 | Action | Default (Win/Linux) | Default (Mac) |
 |--------|---------------------|---------------|
-| Scrub clipboard | `Ctrl+Shift+S` | `⌘+Shift+S` |
-| Restore PII | `Ctrl+Shift+Z` | `⌘+Shift+Z` |
+| Scrub clipboard | `Ctrl + Shift + S` | `⌘ + Shift + S` |
+| Restore PII | `Ctrl + Shift + Z` | `⌘ + Shift + Z` |
 
 ## PII Types
 
