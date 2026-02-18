@@ -9,9 +9,16 @@
 </head>
 <body class="bg-background text-foreground font-sans antialiased min-w-[300px] min-h-[340px] max-w-[340px]">
   <div class="flex flex-col gap-3 p-3">
-    <header class="flex flex-col gap-0.5 border-b border-border pb-2">
-      <h1 class="text-base font-semibold tracking-tight">Aegis Shield</h1>
-      <p class="text-xs text-muted-foreground">Scrub PII before AI, or restore after</p>
+    <header class="relative flex flex-col gap-0.5 border-b border-border pb-2">
+      <div class="flex items-start justify-between gap-2">
+        <div>
+          <h1 class="text-base font-semibold tracking-tight">Aegis Shield</h1>
+          <p class="text-xs text-muted-foreground">Scrub PII before AI, or restore after</p>
+        </div>
+        <button type="button" id="ai-toggle" class="hidden shrink-0 px-3 py-1.5 text-xs font-medium cursor-pointer hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors origin-center">
+          AI
+        </button>
+      </div>
     </header>
     <main class="flex flex-col gap-3">
       <div class="relative">
@@ -27,6 +34,26 @@
         >
           Paste
         </button>
+      </div>
+      <div id="hold-download-area" class="flex flex-col gap-1">
+        <div id="hold-btn-container" class="flex flex-col gap-1">
+          <button
+            id="hold-download-btn"
+            type="button"
+            class="relative select-none overflow-hidden rounded-md border border-input bg-muted px-3 py-2.5 text-xs font-medium hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:bg-accent/80"
+          >
+            <span id="hold-btn-text" class="relative z-10">Hold to download</span>
+            <span id="hold-btn-fill" class="absolute inset-y-0 left-0 z-0 bg-primary/30 transition-[width] duration-75 ease-linear" style="width: 0%"></span>
+          </button>
+          <p class="text-[10px] text-muted-foreground">AI names, orgs, locations · ~110MB</p>
+        </div>
+        <div id="slm-error" class="hidden px-2 py-1.5 text-[10px] text-red-600 dark:text-red-400"></div>
+      </div>
+      <div id="slm-progress" class="hidden flex flex-col gap-1">
+        <div id="slm-progress-bar-container" class="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+          <div id="slm-progress-bar" class="h-full bg-primary transition-[width] duration-200" style="width: 0%"></div>
+        </div>
+        <div id="slm-status" class="text-[10px] text-muted-foreground"></div>
       </div>
       <div id="results" class="flex flex-col gap-2 p-3 hidden">
         <div id="warnings" class="flex flex-col gap-1.5"></div>

@@ -15,7 +15,13 @@
     "type": "git",
     "url": "git+https://github.com/AegisProxy/aegis-shield.git"
   },
-  "keywords": ["browser-extension", "pii", "privacy", "chatgpt", "ai"],
+  "keywords": [
+    "browser-extension",
+    "pii",
+    "privacy",
+    "chatgpt",
+    "ai"
+  ],
   "author": "Ken Tran",
   "license": "MIT",
   "type": "module",
@@ -30,5 +36,8 @@
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3",
     "wxt": "^0.20.17"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.8.1"
   }
 }

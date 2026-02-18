@@ -126,19 +126,17 @@ export function hasPII(text: string): boolean {
 /**
  * Returns a summary of detected PII types
  */
-export function getPIISummary(text: string): Record<string, number> {
-  const matches = detectPII(text);
+export function getPIISummary(text: string, matches?: PIIMatch[]): Record<string, number> {
+  const m = matches ?? detectPII(text);
   const summary: Record<string, number> = {};
-  
-  for (const match of matches) {
+  for (const match of m) {
     summary[match.type] = (summary[match.type] || 0) + 1;
   }
-  
   return summary;
 }
 
 /** Placeholder labels for redacted PII types */
-const PII_PLACEHOLDERS: Record<string, string> = {
+export const PII_PLACEHOLDERS: Record<string, string> = {
   email: '[EMAIL]',
   phone: '[PHONE]',
   ssn: '[SSN]',
@@ -146,16 +144,18 @@ const PII_PLACEHOLDERS: Record<string, string> = {
   zipCode: '[ZIP]',
   ipAddress: '[IP]',
   date: '[DATE]',
+  person: '[NAME]',
+  org: '[ORG]',
+  location: '[LOCATION]',
+  misc: '[MISC]',
 };
 
 /**
  * Redacts PII in text by replacing detected values with placeholders
  */
-export function redactPII(text: string): string {
-  const matches = detectPII(text);
-  // Sort by startIndex descending so we replace from end to start (preserves indices)
-  const sortedMatches = [...matches].sort((a, b) => b.startIndex - a.startIndex);
-  
+export function redactPII(text: string, matches?: PIIMatch[]): string {
+  const m = matches ?? detectPII(text);
+  const sortedMatches = [...m].sort((a, b) => b.startIndex - a.startIndex);
   let result = text;
   for (const match of sortedMatches) {
     const placeholder = PII_PLACEHOLDERS[match.type] ?? `[${match.type.toUpperCase()}]`;
@@ -181,13 +181,28 @@ export function scrubText(text: string): string {
   return redactPII(stripUnicodeTags(text));
 }
 
+/** Merge and deduplicate PII matches; regex takes precedence on overlap */
+export function mergePIIMatches(regexMatches: PIIMatch[], slmMatches: PIIMatch[]): PIIMatch[] {
+  const merged = [...regexMatches];
+  for (const m of slmMatches) {
+    const overlaps = merged.some(
+      (r) =>
+        (m.startIndex >= r.startIndex && m.startIndex < r.endIndex) ||
+        (m.endIndex > r.startIndex && m.endIndex <= r.endIndex) ||
+        (m.startIndex <= r.startIndex && m.endIndex >= r.endIndex)
+    );
+    if (!overlaps) merged.push(m);
+  }
+  return merged.sort((a, b) => a.startIndex - b.startIndex);
+}
+
 /**
  * Scrubs text and returns a mapping of placeholders to original values (for later restore)
  * Uses first occurrence of each PII type when multiple exist
  */
-export function scrubTextWithMapping(text: string): { scrubbed: string; mapping: Record<string, string> } {
+export function scrubTextWithMapping(text: string, extraMatches?: PIIMatch[]): { scrubbed: string; mapping: Record<string, string> } {
   const stripped = stripUnicodeTags(text);
-  const matches = detectPII(stripped);
+  const matches = extraMatches ? mergePIIMatches(detectPII(stripped), extraMatches) : detectPII(stripped);
   const mapping: Record<string, string> = {};
   for (const match of matches) {
     const placeholder = PII_PLACEHOLDERS[match.type] ?? `[${match.type.toUpperCase()}]`;
@@ -196,7 +211,7 @@ export function scrubTextWithMapping(text: string): { scrubbed: string; mapping:
     }
   }
   return {
-    scrubbed: redactPII(stripped),
+    scrubbed: redactPII(stripped, matches),
     mapping,
   };
 }

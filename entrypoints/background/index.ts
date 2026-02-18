@@ -22,7 +22,7 @@ async function writeClipboardViaTab(tabId: number, text: string): Promise<void> 
   });
 }
 
-async function ensureOffscreenDoc() {
+async function ensureOffscreenDoc(): Promise<void> {
   const existing = await chrome.runtime.getContexts({
     contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT],
     documentUrls: [chrome.runtime.getURL(OFFSCREEN_PATH)],
@@ -31,7 +31,7 @@ async function ensureOffscreenDoc() {
   await chrome.offscreen.createDocument({
     url: chrome.runtime.getURL(OFFSCREEN_PATH),
     reasons: [chrome.offscreen.Reason.CLIPBOARD],
-    justification: 'Scrub and restore PII from clipboard via context menu',
+    justification: 'Scrub/restore PII and load AI model (download continues when popup closes)',
   });
 }
 
@@ -90,7 +90,7 @@ export default defineBackground(() => {
             console.warn('Aegis Shield: No mapping—scrub a prompt first');
             return;
           }
-          const restored = restorePII(text, mapping);
+          const restored = restorePII(text, mapping as Record<string, string>);
           await writeClipboardViaTab(tabId, restored);
         }
       } else {
@@ -112,5 +112,17 @@ export default defineBackground(() => {
   chrome.commands.onCommand.addListener((command) => {
     if (command === 'scrub-clipboard') runClipboardAction('scrub');
     else if (command === 'restore-pii') runClipboardAction('restore');
+  });
+
+  chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+    if (msg?.action === 'storage-get' && Array.isArray(msg.keys)) {
+      chrome.storage.local.get(msg.keys).then((data) => sendResponse(data)).catch(() => sendResponse({}));
+      return true;
+    }
+    if (msg?.action === 'storage-set' && msg.items && typeof msg.items === 'object') {
+      chrome.storage.local.set(msg.items).then(() => sendResponse({ ok: true })).catch(() => sendResponse({ ok: false }));
+      return true;
+    }
+    return false;
   });
 });

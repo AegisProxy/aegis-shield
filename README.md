@@ -38,15 +38,20 @@ Load in Chrome: `chrome://extensions` → Developer mode → Load unpacked → `
 
 ## PII Types
 
-| Type        | Redacted as |
-|------------|-------------|
-| Email      | `[EMAIL]`   |
-| Phone      | `[PHONE]`   |
-| SSN        | `[SSN]`     |
-| Credit card| `[CARD]`    |
-| ZIP code   | `[ZIP]`     |
-| IP address | `[IP]`      |
-| Dates      | `[DATE]`    |
+| Type       | Redacted as  | Detection   |
+|------------|--------------|-------------|
+| Email      | `[EMAIL]`    | Regex       |
+| Phone      | `[PHONE]`    | Regex       |
+| SSN        | `[SSN]`      | Regex       |
+| Credit card| `[CARD]`     | Regex       |
+| ZIP code   | `[ZIP]`      | Regex       |
+| IP address | `[IP]`       | Regex       |
+| Dates      | `[DATE]`     | Regex       |
+| Names      | `[NAME]`     | AI (optional) |
+| Orgs       | `[ORG]`      | AI (optional) |
+| Locations  | `[LOCATION]` | AI (optional) |
+
+**AI detection** — Hold the "Hold to download" button in the popup to download a local NER model (~110MB). The download runs in the background, so you can close the popup and it will continue. Once ready, an "AI ready" badge appears and names, organizations, and locations are detected automatically.
 
 ## Project Structure
 
@@ -66,6 +71,14 @@ aegis-shield/
 ├── tailwind.config.js
 └── package.json
 ```
+
+## Where the AI model is stored
+
+The NER model (Xenova/bert-base-NER, ~110MB quantized) is cached by Transformers.js using the browser's **Cache API** under the name `transformers-cache`. This is part of Chrome's internal storage for your profile:
+
+- **Chrome:** Data is stored in your user profile (not in a simple folder you can browse). You can inspect it via DevTools: open any extension page → Application → Cache Storage → `transformers-cache`.
+- **Persistence:** The cache survives extension reloads and browser restarts. It is not cleared when you clear browsing data (Cache Storage is separate).
+- **Shared:** The cache is shared across all pages in the extension (popup, offscreen, etc.).
 
 ## Scripts
 
