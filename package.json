@@ -39,6 +39,6 @@
   },
   "dependencies": {
     "@huggingface/transformers": "^3.8.1",
-    "aegis-sdk": "file:../AegisSDK"
+    "@aegisproxy/aegis-sdk": "file:../AegisSDK"
   }
 }

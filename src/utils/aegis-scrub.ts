@@ -1,9 +1,9 @@
 /**
- * PII scrub / restore using {@link https://github.com/AegisProxy/aegis-sdk aegis-sdk} (AegisProtector).
+ * PII scrub / restore using {@link https://github.com/AegisProxy/aegis-sdk @aegisproxy/aegis-sdk} (AegisProtector).
  * Detection still uses regex + optional SLM in pii-detector; tokens are SDK placeholders (referential integrity per value).
  */
 
-import { AegisProtector, type AegisExportedStateV1 } from 'aegis-sdk';
+import { AegisProtector, type AegisExportedStateV1 } from '@aegisproxy/aegis-sdk';
 import {
   stripUnicodeTags,
   detectPII,

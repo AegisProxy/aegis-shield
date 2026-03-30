@@ -1,5 +1,5 @@
 import { getPIISummary, mergePIIMatches, detectPII } from '../../src/utils/pii-detector';
-import type { AegisExportedStateV1 } from 'aegis-sdk';
+import type { AegisExportedStateV1 } from '@aegisproxy/aegis-sdk';
 import {
   scrubWithAegis,
   restoreWithAegis,

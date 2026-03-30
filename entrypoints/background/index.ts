@@ -3,7 +3,7 @@ import {
   restoreWithAegis,
   AEGIS_STATE_STORAGE_KEY,
 } from '../../src/utils/aegis-scrub';
-import type { AegisExportedStateV1 } from 'aegis-sdk';
+import type { AegisExportedStateV1 } from '@aegisproxy/aegis-sdk';
 
 const OFFSCREEN_PATH = '/offscreen.html';
 async function readClipboardViaTab(tabId: number): Promise<string> {

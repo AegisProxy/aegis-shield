@@ -2,9 +2,9 @@
 
 A privacy-first browser extension that detects and redacts PII in prompts before you send them to AI chatbots. Paste your text, scrub it, then paste the safe version into ChatGPT, Claude, or any AI—all processing happens locally in your browser.
 
-Scrub / restore uses **[aegis-sdk](https://github.com/AegisProxy/aegis-sdk)** (`AegisProtector`): each sensitive span gets a stable token like `[REDACTED_EMAIL_abc12def]` with correct round-trip after the AI replies. PII **detection** is still regex (+ optional on-device NER); the SDK owns **tokenization and mapping** (v1 state in `chrome.storage.local`).
+Scrub / restore uses **[@aegisproxy/aegis-sdk](https://www.npmjs.com/package/@aegisproxy/aegis-sdk)** ([source](https://github.com/AegisProxy/aegis-sdk), `AegisProtector`): each sensitive span gets a stable token like `[REDACTED_EMAIL_abc12def]` with correct round-trip after the AI replies. PII **detection** is still regex (+ optional on-device NER); the SDK owns **tokenization and mapping** (v1 state in `chrome.storage.local`).
 
-**Layout:** `package.json` uses `"aegis-sdk": "file:../AegisSDK"`. Keep `AegisSDK` and `aegis-shield` as sibling folders, run `npm run build` in **AegisSDK** once, then `npm install` here.
+**Layout:** `package.json` uses `"@aegisproxy/aegis-sdk": "file:../AegisSDK"`. Keep `AegisSDK` and `aegis-shield` as sibling folders, run `npm run build` in **AegisSDK** once, then `npm install` here.
 
 ## Features
 
@@ -17,7 +17,7 @@ Scrub / restore uses **[aegis-sdk](https://github.com/AegisProxy/aegis-sdk)** (`
 ## Quick Start
 
 ```bash
-# One-time: build local aegis-sdk sibling (see layout above)
+# One-time: build local @aegisproxy/aegis-sdk sibling (see layout above)
 (cd ../AegisSDK && npm install && npm run build)
 
 npm install
@@ -45,7 +45,7 @@ Load in Chrome: `chrome://extensions` → Developer mode → Load unpacked → `
 
 ## PII Types
 
-Detection types map to **aegis-sdk** entity tags; scrubbed text uses tokens like `[REDACTED_EMAIL_xxxxxxxx]` (stable per distinct value).
+Detection types map to **Aegis SDK** entity tags; scrubbed text uses tokens like `[REDACTED_EMAIL_xxxxxxxx]` (stable per distinct value).
 
 | Type        | SDK entity | Detection   |
 |-------------|------------|-------------|
@@ -76,7 +76,7 @@ aegis-shield/
 ├── src/
 │   ├── logic/slm-integration.ts   # Future SLM placeholder
 │   └── utils/pii-detector.ts      # PII detection (regex / merge)
-│   └── utils/aegis-scrub.ts       # aegis-sdk scrub + restore
+│   └── utils/aegis-scrub.ts       # @aegisproxy/aegis-sdk scrub + restore
 ├── wxt.config.ts
 ├── tailwind.config.js
 └── package.json

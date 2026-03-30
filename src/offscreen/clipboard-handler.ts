@@ -1,4 +1,4 @@
-import type { AegisExportedStateV1 } from 'aegis-sdk';
+import type { AegisExportedStateV1 } from '@aegisproxy/aegis-sdk';
 import {
   scrubWithAegis,
   restoreWithAegis,
