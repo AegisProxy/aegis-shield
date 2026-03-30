@@ -1,6 +1,9 @@
-import { scrubTextWithMapping, restorePII } from '../utils/pii-detector';
-
-const PII_MAPPING_KEY = 'aegis-pii-mapping';
+import type { AegisExportedStateV1 } from 'aegis-sdk';
+import {
+  scrubWithAegis,
+  restoreWithAegis,
+  AEGIS_STATE_STORAGE_KEY,
+} from '../utils/aegis-scrub';
 
 async function storageGet(keys: string[]): Promise<Record<string, unknown>> {
   return (await chrome.runtime.sendMessage({ action: 'storage-get', keys })) ?? {};
@@ -42,16 +45,16 @@ async function handleClipboardAction(action: 'scrub' | 'restore') {
     throw new Error('Clipboard is empty');
   }
   if (action === 'scrub') {
-    const { scrubbed, mapping } = scrubTextWithMapping(text);
-    await storageSet({ [PII_MAPPING_KEY]: mapping });
+    const { scrubbed, state } = scrubWithAegis(text);
+    await storageSet({ [AEGIS_STATE_STORAGE_KEY]: state });
     writeClipboard(scrubbed);
   } else {
-    const data = await storageGet([PII_MAPPING_KEY]);
-    const mapping = data[PII_MAPPING_KEY];
-    if (!mapping || Object.keys(mapping).length === 0) {
+    const data = await storageGet([AEGIS_STATE_STORAGE_KEY]);
+    const state = data[AEGIS_STATE_STORAGE_KEY] as AegisExportedStateV1 | undefined;
+    if (!state?.entries?.length) {
       throw new Error('No mapping—scrub a prompt first');
     }
-    const restored = restorePII(text, mapping as Record<string, string>);
+    const restored = restoreWithAegis(text, state);
     writeClipboard(restored);
   }
 }

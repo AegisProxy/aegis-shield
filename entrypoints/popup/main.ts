@@ -1,8 +1,14 @@
-import { getPIISummary, scrubTextWithMapping, restorePII, mergePIIMatches, detectPII } from '../../src/utils/pii-detector';
+import { getPIISummary, mergePIIMatches, detectPII } from '../../src/utils/pii-detector';
+import type { AegisExportedStateV1 } from 'aegis-sdk';
+import {
+  scrubWithAegis,
+  restoreWithAegis,
+  textHasAegisPlaceholders,
+  AEGIS_STATE_STORAGE_KEY,
+} from '../../src/utils/aegis-scrub';
 import { getStorageLocal } from '../../src/utils/storage';
 import { preloadSLMModel, detectPIIWithSLM, disposeSLM } from '../../src/logic/slm-integration';
 
-const PII_MAPPING_KEY = 'aegis-pii-mapping';
 const SLM_DOWNLOADED_KEY = 'aegis-slm-downloaded';
 const SLM_LOADING_KEY = 'aegis-slm-loading';
 const SLM_PROGRESS_KEY = 'aegis-slm-progress';
@@ -242,7 +248,7 @@ async function updateUI() {
 
   emptyState.classList.add('hidden');
   results.classList.remove('hidden');
-  const hasPlaceholders = /\[(?:EMAIL|PHONE|SSN|CARD|ZIP|IP|DATE|NAME|ORG|LOCATION|MISC)\]/i.test(text);
+  const hasPlaceholders = textHasAegisPlaceholders(text);
   restoreBtn.disabled = !hasPlaceholders;
 
   const regexMatches = detectPII(text);
@@ -289,11 +295,11 @@ async function copyScrubbed() {
       copyBtn.textContent = 'Copy scrubbed text';
     }
   }
-  const { scrubbed, mapping } = scrubTextWithMapping(text, extraMatches);
+  const { scrubbed, state } = scrubWithAegis(text, extraMatches);
   const storage = safeStorageLocal();
   if (storage) {
     try {
-      await storage.set({ [PII_MAPPING_KEY]: mapping });
+      await storage.set({ [AEGIS_STATE_STORAGE_KEY]: state });
     } catch {
       /* ignore */
     }
@@ -311,14 +317,14 @@ async function restorePIIHandler() {
     setTimeout(() => { restoreBtn.textContent = 'Restore PII'; }, 2000);
     return;
   }
-  const data = await storage.get([PII_MAPPING_KEY]);
-  const mapping = data[PII_MAPPING_KEY];
-  if (!mapping || Object.keys(mapping).length === 0) {
+  const data = await storage.get([AEGIS_STATE_STORAGE_KEY]);
+  const state = data[AEGIS_STATE_STORAGE_KEY] as AegisExportedStateV1 | undefined;
+  if (!state || !state.entries?.length) {
     restoreBtn.textContent = 'No mapping - scrub first!';
     setTimeout(() => { restoreBtn.textContent = 'Restore PII'; }, 2000);
     return;
   }
-  const restored = restorePII(text, mapping as Record<string, string>);
+  const restored = restoreWithAegis(text, state);
   input.value = restored;
   navigator.clipboard.writeText(restored).then(() => {
     restoreBtn.textContent = 'Restored & copied!';

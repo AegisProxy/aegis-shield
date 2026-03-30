@@ -38,6 +38,7 @@
     "wxt": "^0.20.17"
   },
   "dependencies": {
-    "@huggingface/transformers": "^3.8.1"
+    "@huggingface/transformers": "^3.8.1",
+    "aegis-sdk": "file:../AegisSDK"
   }
 }

@@ -1,8 +1,11 @@
-import { scrubTextWithMapping, restorePII } from '../../src/utils/pii-detector';
+import {
+  scrubWithAegis,
+  restoreWithAegis,
+  AEGIS_STATE_STORAGE_KEY,
+} from '../../src/utils/aegis-scrub';
+import type { AegisExportedStateV1 } from 'aegis-sdk';
 
 const OFFSCREEN_PATH = '/offscreen.html';
-const PII_MAPPING_KEY = 'aegis-pii-mapping';
-
 async function readClipboardViaTab(tabId: number): Promise<string> {
   const results = await chrome.scripting.executeScript({
     target: { tabId },
@@ -81,16 +84,19 @@ export default defineBackground(() => {
           return;
         }
         if (action === 'scrub') {
-          const { scrubbed, mapping } = scrubTextWithMapping(text);
-          await chrome.storage.local.set({ [PII_MAPPING_KEY]: mapping });
+          const { scrubbed, state } = scrubWithAegis(text);
+          await chrome.storage.local.set({ [AEGIS_STATE_STORAGE_KEY]: state });
           await writeClipboardViaTab(tabId, scrubbed);
         } else {
-          const { [PII_MAPPING_KEY]: mapping } = await chrome.storage.local.get(PII_MAPPING_KEY);
-          if (!mapping || Object.keys(mapping).length === 0) {
+          const { [AEGIS_STATE_STORAGE_KEY]: raw } = await chrome.storage.local.get(
+            AEGIS_STATE_STORAGE_KEY
+          );
+          const state = raw as AegisExportedStateV1 | undefined;
+          if (!state?.entries?.length) {
             console.warn('Aegis Shield: No mapping—scrub a prompt first');
             return;
           }
-          const restored = restorePII(text, mapping as Record<string, string>);
+          const restored = restoreWithAegis(text, state);
           await writeClipboardViaTab(tabId, restored);
         }
       } else {

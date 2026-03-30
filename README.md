@@ -1,6 +1,10 @@
 # Aegis Shield
 
-A privacy-first browser extension that detects and redacts PII in prompts before you send them to AI chatbots. Paste your text, scrub it, then paste the safe version into ChatGPT, Claude, or any AI-all processing happens locally in your browser.
+A privacy-first browser extension that detects and redacts PII in prompts before you send them to AI chatbots. Paste your text, scrub it, then paste the safe version into ChatGPT, Claude, or any AI—all processing happens locally in your browser.
+
+Scrub / restore uses **[aegis-sdk](https://github.com/AegisProxy/aegis-sdk)** (`AegisProtector`): each sensitive span gets a stable token like `[REDACTED_EMAIL_abc12def]` with correct round-trip after the AI replies. PII **detection** is still regex (+ optional on-device NER); the SDK owns **tokenization and mapping** (v1 state in `chrome.storage.local`).
+
+**Layout:** `package.json` uses `"aegis-sdk": "file:../AegisSDK"`. Keep `AegisSDK` and `aegis-shield` as sibling folders, run `npm run build` in **AegisSDK** once, then `npm install` here.
 
 ## Features
 
@@ -13,6 +17,9 @@ A privacy-first browser extension that detects and redacts PII in prompts before
 ## Quick Start
 
 ```bash
+# One-time: build local aegis-sdk sibling (see layout above)
+(cd ../AegisSDK && npm install && npm run build)
+
 npm install
 npm run build
 ```
@@ -38,18 +45,20 @@ Load in Chrome: `chrome://extensions` → Developer mode → Load unpacked → `
 
 ## PII Types
 
-| Type       | Redacted as  | Detection   |
-|------------|--------------|-------------|
-| Email      | `[EMAIL]`    | Regex       |
-| Phone      | `[PHONE]`    | Regex       |
-| SSN        | `[SSN]`      | Regex       |
-| Credit card| `[CARD]`     | Regex       |
-| ZIP code   | `[ZIP]`      | Regex       |
-| IP address | `[IP]`       | Regex       |
-| Dates      | `[DATE]`     | Regex       |
-| Names      | `[NAME]`     | AI (optional) |
-| Orgs       | `[ORG]`      | AI (optional) |
-| Locations  | `[LOCATION]` | AI (optional) |
+Detection types map to **aegis-sdk** entity tags; scrubbed text uses tokens like `[REDACTED_EMAIL_xxxxxxxx]` (stable per distinct value).
+
+| Type        | SDK entity | Detection   |
+|-------------|------------|-------------|
+| Email       | `email`    | Regex       |
+| Phone       | `phone`    | Regex       |
+| SSN         | `ssn`      | Regex       |
+| Credit card | `card`     | Regex       |
+| ZIP code    | `zip`      | Regex       |
+| IP address  | `ip`       | Regex       |
+| Dates       | `date`     | Regex       |
+| Names       | `name`     | AI (optional) |
+| Orgs        | `org`      | AI (optional) |
+| Locations   | `location` | AI (optional) |
 
 **AI detection** - Hold the "Hold to download" button in the popup to download a local NER model (~110MB). The download runs in the background, so you can close the popup and it will continue. Once ready, an "AI ready" badge appears and names, organizations, and locations are detected automatically.
 
@@ -66,7 +75,8 @@ aegis-shield/
 │       └── style.css
 ├── src/
 │   ├── logic/slm-integration.ts   # Future SLM placeholder
-│   └── utils/pii-detector.ts      # PII detection & scrubbing
+│   └── utils/pii-detector.ts      # PII detection (regex / merge)
+│   └── utils/aegis-scrub.ts       # aegis-sdk scrub + restore
 ├── wxt.config.ts
 ├── tailwind.config.js
 └── package.json
